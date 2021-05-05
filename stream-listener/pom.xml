@@ -15,7 +15,8 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
-		<spring-cloud.version>2020.0.2</spring-cloud.version>
+		<!-- <spring-cloud.version>2020.0.2</spring-cloud.version> --> <!-- Not working bug -->
+		<spring-cloud.version>Hoxton.SR11</spring-cloud.version> 
 	</properties>
 	<dependencies>
 		<dependency>
