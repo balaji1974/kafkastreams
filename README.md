@@ -41,7 +41,8 @@ Starting from Java 8 we can concisely represented as a lambda expression of type
 
 c. Also note that in the above code the binder creates the binding for the application with a name kstreamConsumer-in-0, i.e. the name of the function bean name followed by a dash character (-) and the literal in followed by another dash and then the ordinal position of the parameter.    
 
-d. In the application.properties file, add the following settings to glue everything togther.    
+d. In the application.properties file, add the following settings to glue everything together.   
+\#Consumer bean function name 
 spring.cloud.stream.function.definition=kstreamConsumer    
 spring.cloud.stream.bindings.kstreamConsumer-in-0.destination=my_sample_consumer    
 
