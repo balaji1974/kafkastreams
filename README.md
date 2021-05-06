@@ -42,13 +42,18 @@ Starting from Java 8 we can concisely represented as a lambda expression of type
 c. Also note that in the above code the binder creates the binding for the application with a name kstreamConsumer-in-0, i.e. the name of the function bean name followed by a dash character (-) and the literal in followed by another dash and then the ordinal position of the parameter.    
 
 d. In the application.properties file, add the following settings to glue everything together.   
-\#Consumer bean function name 
+\#Consumer bean function name     
 spring.cloud.stream.function.definition=kstreamConsumer    
+\#Binding destination to topic     
 spring.cloud.stream.bindings.kstreamConsumer-in-0.destination=my_sample_consumer    
 
+\#Application id    
 spring.cloud.stream.kafka.streams.binder.application-id=stream-listener    
+\#Broker url     
 spring.cloud.stream.kafka.streams.binder.brokers=localhost:9092    
-spring.cloud.stream.kafka.streams.binder.configuration.default.key.serde=org.apache.kafka.common.serialization.Serdes$StringSerde    
+\#KStream key type     
+spring.cloud.stream.kafka.streams.binder.configuration.default.key.serde=org.apache.kafka.common.serialization.Serdes$StringSerde   
+\#KStream value type     
 spring.cloud.stream.kafka.streams.binder.configuration.default.value.serde=org.apache.kafka.common.serialization.Serdes$StringSerde    
 
 e. With this start the application and create a producer from the command line with the following command:     
