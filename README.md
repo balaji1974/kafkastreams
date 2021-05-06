@@ -29,13 +29,13 @@ a. Add the following dependencies in the pom.xml:
 
 b. Next create a consumer class with the following bean: 
 ```
-    @Bean
-    public java.util.function.Consumer<KStream<String, String>> kstreamConsumer() { // This method name is used in application.properties
-        return input ->
-        	input.foreach((key, value) -> {
-        		logger.info("Key: " + key + " Value: " + value);
-            });
-    }
+@Bean
+public java.util.function.Consumer<KStream<String, String>> kstreamConsumer() { // This method name is used in application.properties
+    return input ->
+    	input.foreach((key, value) -> {
+    		logger.info("Key: " + key + " Value: " + value);
+        });
+}
 ```
 Starting from Java 8 we can concisely represented as a lambda expression of type java.util.function.Consumer.  The application consumes data and logs the information from the KStream key and value on the standard output. The bean method is of type java.util.function.Consumer which is parameterized with KStream. Then in the implementation, we are returning a Consumer object that is essentially a lambda expression. Inside the lambda expression, the code for processing the data is provided.    
 
