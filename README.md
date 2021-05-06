@@ -29,7 +29,7 @@ a. Add the following dependencies in the pom.xml:
 
 b. Next create a consumer class with the following bean: 
 ```
-	@Bean
+@Bean
     public java.util.function.Consumer<KStream<String, String>> kstreamConsumer() { // This method name is used in application.properties
         return input ->
         	input.foreach((key, value) -> {
