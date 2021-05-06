@@ -61,4 +61,7 @@ kafka-console-producer --broker-list localhost:9092 --topic my_sample_consumer
 
 f. Now when we type anything in the producer it gets displayed in the consumer. (Note: the topic is autocreated when the application starts, but this depends on the kafka settings)    
 
+For more information please look at the official document at:    
+https://docs.spring.io/spring-cloud-stream-binder-kafka/docs/3.1.0/reference/html/spring-cloud-stream-binder-kafka.html#_usage    
+
 

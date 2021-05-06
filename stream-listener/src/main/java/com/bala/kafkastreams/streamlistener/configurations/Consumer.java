@@ -14,11 +14,15 @@ public class Consumer {
 		
 	Logger logger=LoggerFactory.getLogger(Consumer.class);
 	
+	
 	@Bean
     public java.util.function.Consumer<KStream<String, String>> kstreamConsumer() { // This method name is used in application.properties
-        return input ->
-        	input.foreach((key, value) -> {
-        		logger.info("Key: " + key + " Value: " + value);
-            });
+		java.util.function.Consumer<KStream<String,String>> consumer= (KStream<String,String> kStream) -> {
+			kStream.foreach((key, value) -> {
+				logger.info("Key: " + key + " Value: " + value);
+			});
+		};
+		return consumer;
     }
+	
 }
