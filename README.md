@@ -67,3 +67,21 @@ For more information please look at the official document at:
 https://docs.spring.io/spring-cloud-stream-binder-kafka/docs/3.1.0/reference/html/spring-cloud-stream-binder-kafka.html#_usage    
 
 
+### 2) Json Pos-Generator (Project: json-pos-generator)    
+
+a. This is an application that will be used for producing data for the rest of this project. It was taken from the below url as it would be easy for us to create streaming data based on this example.    
+(Code taken from : https://github.com/LearningJournal/Kafka-Streams-with-Spring-Cloud/tree/main/jsonposgen )    
+
+b. We have 3 data files under the resources\data folder namely:    
+invoice.json   
+address.json   
+products.json   
+
+c. Next we have 3 models for these data sources under the model folder and 3 services under the service folder. A main service called KafkaProducerService.java creates invoice randomly based on the data in the data folder and sends them to the Kafka topic.   
+
+
+
+
+
+
+
