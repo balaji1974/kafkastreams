@@ -1,4 +1,4 @@
-package com.bala.kafkastreams.avroposgenerator.service.datagenerator;
+package com.bala.kafkastreams.avroposgenerator.services.datagenerator;
 
 import com.bala.kafkastreams.avroposgenerator.model.LineItem;
 import com.fasterxml.jackson.databind.ObjectMapper;

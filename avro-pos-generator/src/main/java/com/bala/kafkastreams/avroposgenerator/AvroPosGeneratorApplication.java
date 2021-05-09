@@ -7,8 +7,8 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.bala.kafkastreams.avroposgenerator.service.KafkaProducerService;
-import com.bala.kafkastreams.avroposgenerator.service.datagenerator.InvoiceGenerator;
+import com.bala.kafkastreams.avroposgenerator.services.KafkaProducerService;
+import com.bala.kafkastreams.avroposgenerator.services.datagenerator.InvoiceGenerator;
 
 @SpringBootApplication
 public class AvroPosGeneratorApplication implements ApplicationRunner{

@@ -1,4 +1,4 @@
-package com.bala.kafkastreams.avroposgenerator.service;
+package com.bala.kafkastreams.avroposgenerator.services;
 
 
 import lombok.extern.log4j.Log4j2;

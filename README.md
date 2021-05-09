@@ -80,6 +80,63 @@ products.json
 c. Next we have 3 models for these data sources under the model folder and 3 services under the service folder. A main service called KafkaProducerService.java creates invoice randomly based on the data in the data folder and sends them to the Kafka topic.   
 
 
+### 3) Avro Pos-Generator (Project: avro-pos-generator)   
+ 
+a. What if your application does not use Json serliazation and uses an Avro serialization? For this we need to register our application to the schema registry to Kafka. Kafka does not provide a schema registery and hence for this purpose we must download the confluence kafka which provides a ready made schema registry for us. After starting our zookeeper and kafka, we can start the confluence schema registry with the following command from the confluence directory:     
+bin/schema-registry-start etc/schema-registry/schema-registry.properties     
+
+b. For Avro serilization to auto genreate our avro friendly classes we need to add the following in our pom.xml    
+```xml   
+<dependency>
+    <groupId>org.apache.avro</groupId>
+    <artifactId>avro</artifactId>
+    <version>1.10.2</version>
+</dependency>
+
+
+<plugin>
+	<groupId>org.apache.avro</groupId>
+	<artifactId>avro-maven-plugin</artifactId>
+	<version>1.9.2</version> <!-- Note: 1.10.x is not working correctly and hence used a lower version -->
+	<executions>
+		<execution>
+			<phase>generate-sources</phase>
+			<goals>
+				<goal>schema</goal>
+			</goals>
+			<configuration>
+				<sourceDirectory>src/main/avro</sourceDirectory>
+				<outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
+				<imports>
+					<import>${project.basedir}/src/main/avro/LineItem.avsc</import>
+					<import>${project.basedir}/src/main/avro/DeliveryAddress.avsc</import>
+				</imports>
+				<stringType>String</stringType>
+			</configuration>
+		</execution>
+	</executions>
+</plugin>
+```
+
+c. Next we add the following avro schema description under the avro folder:    
+/avro-pos-generator/src/main/avro/DeliveryAddress.avsc    
+/avro-pos-generator/src/main/avro/LineItem.avsc    
+/avro-pos-generator/src/main/avro/PosInvoice.avsc    
+
+d. Now we are ready to generate the avro friendly classes. From Maven, we need to clean, generate-sources and finally update maven. After this step our avro friendly classes are auto-generated in the /avro-pos-generator/target/generated-sources directory.   
+
+e. We have 3 data files under the resources\data folder namely:    
+invoice.json   
+address.json   
+products.json   
+
+f. Next we add the 3 services under the service folder. A main service called KafkaProducerService.java creates invoice randomly based on the data in the data folder and sends them to the Kafka topic. These two steps are the same as we did for our json project before.    
+
+g. Thats it. Start the project and we can see invoices being produced randomly to our avro-pos-topic topic.    
+
+
+
+
 
 
 
