@@ -6,6 +6,7 @@ import com.bala.kafkastreams.avroposgenerator.model.PosInvoice;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.log4j.Log4j2;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +22,10 @@ public class InvoiceGenerator {
     private final Random invoiceNumber;
     private final Random numberOfItems;
     private final PosInvoice[] invoices;
+    
     @Autowired
     AddressGenerator addressGenerator;
+    
     @Autowired
     ProductGenerator productGenerator;
 
