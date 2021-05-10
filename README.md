@@ -65,6 +65,7 @@ f. Now when we type anything in the producer it gets displayed in the consumer. 
 
 For more information please look at the official document at:    
 https://docs.spring.io/spring-cloud-stream-binder-kafka/docs/3.1.0/reference/html/spring-cloud-stream-binder-kafka.html#_usage    
+https://docs.spring.io/spring-cloud-stream-binder-kafka/docs/3.1.0/reference/html/kafka-streams.html    
 
 
 ### 2) Json Pos-Generator (Project: json-pos-generator)    
@@ -134,6 +135,47 @@ f. Next we add the 3 services under the service folder. A main service called Ka
 
 g. Thats it. Start the project and we can see invoices being produced randomly to our avro-pos-topic topic.    
 
+
+### 4) Json Pos-Consumer (Project: json-pos-consumer) 
+
+a. For this project we will be using the Kafka streams api which will not use a serializar. But it will need a serde for deserializar purpose which we will add in our dependency.      
+
+```xml   
+<dependency>
+	<groupId>io.confluent</groupId>
+	<artifactId>kafka-streams-avro-serde</artifactId>
+	<version>6.1.1</version>
+</dependency> 
+```
+b. Like our last project to create an avro friendly data model we will add our maven dependencies and mavan plugin to create the avro friendly data model.    
+
+c. This project has three requriments: 
+If the invoice type is "HOME-DELIVERY" then push the invoice to the shipment topic.    
+If customer type is "PRIME" then the loyality point is caculated and a notification is sent to the notification topic.    
+For all invoives mask the personal information of the customer and send the detials back to the hadoop topic to be later stored into Hadoop for analysis.    
+Hence the 3 input topcis will the same "pos-topic" but the output will be to three different topics.   
+
+d. The above requiremnts is configured in our application.properties as follows:    
+spring.cloud.stream.function.definition=processHadoopRecords, processNotificationRecords, processShipmentRecords    
+spring.cloud.stream.bindings.processShipmentRecords-in-0.destination=pos-topic    
+spring.cloud.stream.bindings.processShipmentRecords-out-0.destination=shipment-topic    
+spring.cloud.stream.bindings.processNotificationRecords-in-0.destination=pos-topic    
+spring.cloud.stream.bindings.processNotificationRecords-out-0.destination=loyalty-topic    
+spring.cloud.stream.bindings.processHadoopRecords-in-0.destination=pos-topic    
+spring.cloud.stream.bindings.processHadoopRecords-out-0.destination=hadoop-sink-topic   
+
+spring.cloud.stream.kafka.streams.bindings.processShipmentRecords-out-0.producer.value-serde=io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde    
+spring.cloud.stream.kafka.streams.bindings.processNotificationRecords-out-0.producer.value-serde=io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde    
+spring.cloud.stream.kafka.streams.bindings.processHadoopRecords-out-0.producer.value-serde=io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde    
+
+e. We will create 3 beans in our Kafka consumer class which will perform the necessary transformation and send back the results to each of the topics. Also for each transformation we have utility methods defined in our RecordBuilder class which does the necessary business logic.    
+
+
+
+
+
+
+ 
 
 
 
