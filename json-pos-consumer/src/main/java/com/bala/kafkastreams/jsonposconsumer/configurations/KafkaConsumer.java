@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.bala.kafkastreams.jsonposconsumer.model.AvroPosInvoice;
 import com.bala.kafkastreams.jsonposconsumer.model.HadoopRecord;
 import com.bala.kafkastreams.jsonposconsumer.model.Notification;
 import com.bala.kafkastreams.jsonposconsumer.model.PosInvoice;
@@ -24,7 +25,7 @@ public class KafkaConsumer {
 	RecordBuilder recordBuilder;
 	
 	@Bean
-    public Function<KStream<String, PosInvoice>, KStream<String, com.bala.kafkastreams.jsonposconsumer.model.avro.PosInvoice>> processShipmentRecords() {
+    public Function<KStream<String, PosInvoice>, KStream<String, AvroPosInvoice>> processShipmentRecords() {
         return input -> input
                 .filter((k, v) -> v.getDeliveryType().equalsIgnoreCase("HOME-DELIVERY"))
                 .mapValues( v -> recordBuilder.getShipmentRecord(v))

@@ -36,7 +36,7 @@
       ]
     }
   ],
-  "name": "DeliveryAddress",
-  "namespace": "com.bala.kafkastreams.jsonposconsumer.model.avro",
+  "name": "AvroDeliveryAddress",
+  "namespace": "com.bala.kafkastreams.jsonposconsumer.model",
   "type": "record"
 }

@@ -36,7 +36,7 @@
       ]
     }
   ],
-  "name": "LineItem",
-  "namespace": "com.bala.kafkastreams.jsonposconsumer.model.avro",
+  "name": "AvroLineItem",
+  "namespace": "com.bala.kafkastreams.jsonposconsumer.model",
   "type": "record"
 }

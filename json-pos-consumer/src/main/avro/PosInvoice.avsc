@@ -106,22 +106,22 @@
       ]
     },
     {
-    	"name": "DeliveryAddress",
+    	"name": "AvroDeliveryAddress",
     	"type": [
     		"null",
-    		"DeliveryAddress"
+    		"AvroDeliveryAddress"
     	]
     },
     {
-    	"name": "InvoiceLineItems",
+    	"name": "AvroInvoiceLineItems",
     	"type": 
     		{
     			"type": "array", 
-    			"items": "LineItem"
+    			"items": "AvroLineItem"
     		}
     }
   ],
-  "name": "PosInvoice",
-  "namespace": "com.bala.kafkastreams.jsonposconsumer.model.avro",
+  "name": "AvroPosInvoice",
+  "namespace": "com.bala.kafkastreams.jsonposconsumer.model",
   "type": "record"
 }

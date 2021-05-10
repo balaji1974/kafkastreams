@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.bala.kafkastreams.jsonposconsumer.model.AvroDeliveryAddress;
+import com.bala.kafkastreams.jsonposconsumer.model.AvroLineItem;
+import com.bala.kafkastreams.jsonposconsumer.model.AvroPosInvoice;
 import com.bala.kafkastreams.jsonposconsumer.model.HadoopRecord;
 import com.bala.kafkastreams.jsonposconsumer.model.LineItem;
 import com.bala.kafkastreams.jsonposconsumer.model.Notification;
@@ -57,11 +60,10 @@ public class RecordBuilder {
         return records;
     }
     
-    public com.bala.kafkastreams.jsonposconsumer.model.avro.PosInvoice getShipmentRecord(PosInvoice invoice){
+    public AvroPosInvoice getShipmentRecord(PosInvoice invoice){
         
-		
-    	com.bala.kafkastreams.jsonposconsumer.model.avro.DeliveryAddress deliveryAddress=new 
-    			com.bala.kafkastreams.jsonposconsumer.model.avro.DeliveryAddress(
+    	AvroDeliveryAddress deliveryAddress=new 
+    			AvroDeliveryAddress(
     					invoice.getDeliveryAddress().getAddressLine(), 
     					invoice.getDeliveryAddress().getCity(), 
     					invoice.getDeliveryAddress().getState(), 
@@ -69,11 +71,11 @@ public class RecordBuilder {
     					invoice.getDeliveryAddress().getContactNumber()	
     					);
     	
-    	List<com.bala.kafkastreams.jsonposconsumer.model.avro.LineItem> lineItems=new ArrayList<com.bala.kafkastreams.jsonposconsumer.model.avro.LineItem>();
+    	List<AvroLineItem> lineItems=new ArrayList<AvroLineItem>();
     	
     	for(LineItem lnIt:invoice.getInvoiceLineItems()) {
-    		com.bala.kafkastreams.jsonposconsumer.model.avro.LineItem lineItem=new 
-    			com.bala.kafkastreams.jsonposconsumer.model.avro.LineItem(
+    		AvroLineItem lineItem=new 
+    			AvroLineItem(
     					lnIt.getItemCode(), 
     					lnIt.getItemDescription(), 
     					lnIt.getItemPrice(), 
@@ -82,13 +84,8 @@ public class RecordBuilder {
     		lineItems.add(lineItem);
     	}
     	
-    	
-    	
-    	
-    	
-    	
-    	com.bala.kafkastreams.jsonposconsumer.model.avro.PosInvoice posInvoice=
-        		new com.bala.kafkastreams.jsonposconsumer.model.avro.PosInvoice(invoice.getInvoiceNumber(), 
+    	AvroPosInvoice posInvoice=
+        		new AvroPosInvoice(invoice.getInvoiceNumber(), 
         				invoice.getCreatedTime(), invoice.getCustomerCardNo(), 
         				invoice.getTotalAmount(), invoice.getNumberOfItems(), invoice.getPaymentMethod(), 
         				invoice.getTaxableAmount(), invoice.getCGST(), invoice.getSGST(), 
