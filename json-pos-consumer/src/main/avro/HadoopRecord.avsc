@@ -1,6 +1,6 @@
 {"namespace": "com.bala.kafkastreams.jsonposconsumer.model",
   "type": "record",
-  "name": "ShipmentRecord",
+  "name": "HadoopRecord",
   "fields": [
     {"name": "InvoiceNumber", "type": ["null", "string"]},
     {"name": "CreatedTime",  "type":["null", "long"]},

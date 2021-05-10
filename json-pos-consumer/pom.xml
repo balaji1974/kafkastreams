@@ -96,6 +96,10 @@
 						<configuration>
 							<sourceDirectory>src/main/avro</sourceDirectory>
 							<outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
+							<imports>
+								<import>${project.basedir}/src/main/avro/LineItem.avsc</import>
+								<import>${project.basedir}/src/main/avro/DeliveryAddress.avsc</import>
+							</imports>
 							<stringType>String</stringType>
 						</configuration>
 					</execution>

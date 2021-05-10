@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import com.bala.kafkastreams.jsonposconsumer.model.HadoopRecord;
 import com.bala.kafkastreams.jsonposconsumer.model.Notification;
 import com.bala.kafkastreams.jsonposconsumer.model.PosInvoice;
-import com.bala.kafkastreams.jsonposconsumer.model.ShipmentRecord;
+
 import com.bala.kafkastreams.jsonposconsumer.services.RecordBuilder;
 
 import lombok.extern.log4j.Log4j2;
@@ -23,13 +23,11 @@ public class KafkaConsumer {
 	@Autowired
 	RecordBuilder recordBuilder;
 	
-	
-	
 	@Bean
-    public Function<KStream<String, PosInvoice>, KStream<String, ShipmentRecord>> processShipmentRecords() {
+    public Function<KStream<String, PosInvoice>, KStream<String, com.bala.kafkastreams.jsonposconsumer.model.avro.PosInvoice>> processShipmentRecords() {
         return input -> input
                 .filter((k, v) -> v.getDeliveryType().equalsIgnoreCase("HOME-DELIVERY"))
-                .flatMapValues( v -> recordBuilder.getShipmentRecords(v))
+                .mapValues( v -> recordBuilder.getShipmentRecord(v))
                 .peek((k, v) -> log.info(String.format("Shipment Record:- Key: %s, Value: %s", k, v)));
     }
 	

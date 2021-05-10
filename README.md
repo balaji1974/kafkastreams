@@ -138,7 +138,15 @@ g. Thats it. Start the project and we can see invoices being produced randomly t
 
 ### 4) Json Pos-Consumer (Project: json-pos-consumer) 
 
-a. For this project we will be using the Kafka streams api which will not use a serializar. But it will need a serde for deserializar purpose which we will add in our dependency.      
+a. This project has three requriments:
+If the invoice type is "HOME-DELIVERY" then push the invoice to the shipment topic.    
+If customer type is "PRIME" then the loyality point is caculated and a notification is sent to the notification topic.    
+For all invoives mask the personal information of the customer and send the detials back to the hadoop topic to be later stored into Hadoop for analysis.    
+Hence the 3 input topcis will the same "pos-topic" but the output will be to three different topics.   
+
+For this project we will read from our json formatted input data and produce the output in AVRO friendly manner.   
+
+b. For this project we will be using the Kafka streams api which will not use a serializar. But it will need a serde for deserializar purpose which we will add in our dependency.      
 
 ```xml   
 <dependency>
@@ -147,13 +155,7 @@ a. For this project we will be using the Kafka streams api which will not use a 
 	<version>6.1.1</version>
 </dependency> 
 ```
-b. Like our last project to create an avro friendly data model we will add our maven dependencies and mavan plugin to create the avro friendly data model.    
-
-c. This project has three requriments: 
-If the invoice type is "HOME-DELIVERY" then push the invoice to the shipment topic.    
-If customer type is "PRIME" then the loyality point is caculated and a notification is sent to the notification topic.    
-For all invoives mask the personal information of the customer and send the detials back to the hadoop topic to be later stored into Hadoop for analysis.    
-Hence the 3 input topcis will the same "pos-topic" but the output will be to three different topics.   
+c. Like our last project to create an avro friendly data model we will add our maven dependencies and mavan plugin to create the avro friendly data model.    
 
 d. The above requiremnts is configured in our application.properties as follows:    
 spring.cloud.stream.function.definition=processHadoopRecords, processNotificationRecords, processShipmentRecords    
@@ -170,7 +172,7 @@ spring.cloud.stream.kafka.streams.bindings.processHadoopRecords-out-0.producer.v
 
 e. We will create 3 beans in our Kafka consumer class which will perform the necessary transformation and send back the results to each of the topics. Also for each transformation we have utility methods defined in our RecordBuilder class which does the necessary business logic.    
 
-
+f. Thats it. Start the producer, and run the consumer to check if the data is properly produced to the 3 topics that we defined in our properties file.     
 
 
 
