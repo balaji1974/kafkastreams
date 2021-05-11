@@ -176,8 +176,32 @@ f. Thats it. Start the producer, and run the consumer to check if the data is pr
 
 ### 5) Avro Pos-Consumer (Project: avro-pos-consumer) - Input format: Avro & Output format: Json
 
+a. This project has the same requriments as the previous example. except that instead of Json input we get Avro input format and we must publish back Json format data to the topics.
 
- 
+b. Since most of the requirements are the same, the just need to add one more dependency of formating our output topic to a Json format.    
+```xml 
+<dependency>
+    <groupId>io.confluent</groupId>
+    <artifactId>kafka-streams-json-schema-serde</artifactId>
+    <version>6.1.1</version>
+</dependency>
+```
+
+c. Like our last project we will first create our Avro friendly class first.    
+
+d. Next we will create our RecordBuilder service and our Kafka Configuations class (same as before)    
+
+e. Now our only change will be in our properties file, which is as below:    
+spring.cloud.stream.kafka.streams.bindings.processNotificationRecords-in-0.consumer.value-serde=io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde    
+spring.cloud.stream.kafka.streams.bindings.processNotificationRecords-out-0.producer.value-serde=io.confluent.kafka.streams.serdes.json.KafkaJsonSchemaSerde   
+spring.cloud.stream.kafka.streams.bindings.processHadoopRecords-in-0.consumer.value-serde=io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde   
+spring.cloud.stream.kafka.streams.bindings.processHadoopRecords-out-0.producer.value-serde=io.confluent.kafka.streams.serdes.json.KafkaJsonSchemaSerde   
+
+This is a mapping of our input (Avro format) and our output (Json format).  
+
+f. Now start the producer and run the consumer to check if everything works fine.    
+
+
 
 
 
