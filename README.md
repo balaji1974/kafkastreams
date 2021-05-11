@@ -9,6 +9,19 @@ bin/kafka-server-start.sh config/server.properties
 ### For more details on the above commands please refer to my kafka reposiory.   
 
 
+# Important KStream methods: -> KStream(key,value pair) ->  Same key gets inserted multiple times     
+filter, filterNot    
+map, mapValues -> one to one     
+flatMap, flatMapValues -> one to many     
+forEach, peek -> while call terminated with forEach, peek will return the same KStream value back    
+print   
+branch, merge -> while branch will split the KStream, merge will join 2 KStreams    
+to -> is used to send messages to a Kafka topic    
+toTable-> is used to convert KStream to a KTable    
+repartition, selectKey, groupBy, groupByKey, join -> Methods for grouping, aggrigation and joining    
+
+# KTable -> Same key get updated and when we send a null value the key gets removed.     
+
 ### 1) Stream-Listener (Project: stream-listener)
 
 a. Add the following dependencies in the pom.xml:    
@@ -201,6 +214,20 @@ This is a mapping of our input (Avro format) and our output (Json format).
 
 f. Now start the producer and run the consumer to check if everything works fine.    
 
+### 6) exactly-once-consumer (Project: exactly-once-consumer) - Input format: Avro & Output format: Avro    
+
+a. In our previous example we used 2 different listeners to read from the same topic which is a waste of resource when we can just read one time from the same topic and process our result and then publish it back to two different topics.  This example exactly does that.     
+
+b. Also when we are publishing our results back to two different topics from a single interface, one might fail causing data in-consistency across topics. So we need to bound both of this into a single transactional until. We do this by having both the publishing activties under a single method and adding the following configuration in our application.properties file.      
+spring.cloud.stream.kafka.streams.binder.configuration.processing.guarantee: exactly_once      
+
+c. Apart from this all other steps like, using avro files to generate avro schema, and having a RecordBuilder service for our result builder is all the same as the previous example.     
+
+d. The only difference is in our KafkaConsumer class where we now have a single bean returing a void Consumer<KStream<String, PosInvoice>> method, and constructing our hadoopRecordKStream and notificationKStream records before publishing them to their own topics.    
+
+
+
+   
 
 
 
