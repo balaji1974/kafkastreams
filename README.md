@@ -136,7 +136,7 @@ f. Next we add the 3 services under the service folder. A main service called Ka
 g. Thats it. Start the project and we can see invoices being produced randomly to our avro-pos-topic topic.    
 
 
-### 4) Json Pos-Consumer (Project: json-pos-consumer) 
+### 4) Json Pos-Consumer (Project: json-pos-consumer) - Input format: Json & Output format: Avro
 
 a. This project has three requriments:
 If the invoice type is "HOME-DELIVERY" then push the invoice to the shipment topic.    
@@ -174,7 +174,7 @@ e. We will create 3 beans in our Kafka consumer class which will perform the nec
 
 f. Thats it. Start the producer, and run the consumer to check if the data is properly produced to the 3 topics that we defined in our properties file.     
 
-
+### 5) Avro Pos-Consumer (Project: avro-pos-consumer) - Input format: Avro & Output format: Json
 
 
  

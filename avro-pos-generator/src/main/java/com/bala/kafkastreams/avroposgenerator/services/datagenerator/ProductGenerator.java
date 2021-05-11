@@ -1,6 +1,6 @@
 package com.bala.kafkastreams.avroposgenerator.services.datagenerator;
 
-import com.bala.kafkastreams.avroposgenerator.model.LineItem;
+import com.bala.kafkastreams.model.LineItem;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.stereotype.Service;

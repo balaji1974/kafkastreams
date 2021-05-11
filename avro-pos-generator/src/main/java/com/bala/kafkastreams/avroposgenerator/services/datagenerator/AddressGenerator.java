@@ -1,6 +1,6 @@
 package com.bala.kafkastreams.avroposgenerator.services.datagenerator;
 
-import com.bala.kafkastreams.avroposgenerator.model.DeliveryAddress;
+import com.bala.kafkastreams.model.DeliveryAddress;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.stereotype.Service;

@@ -1,8 +1,8 @@
 package com.bala.kafkastreams.avroposgenerator.services.datagenerator;
 
-import com.bala.kafkastreams.avroposgenerator.model.DeliveryAddress;
-import com.bala.kafkastreams.avroposgenerator.model.LineItem;
-import com.bala.kafkastreams.avroposgenerator.model.PosInvoice;
+import com.bala.kafkastreams.model.DeliveryAddress;
+import com.bala.kafkastreams.model.LineItem;
+import com.bala.kafkastreams.model.PosInvoice;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.log4j.Log4j2;
