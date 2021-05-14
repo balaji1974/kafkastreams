@@ -226,8 +226,16 @@ c. Apart from this all other steps like, using avro files to generate avro schem
 d. The only difference is in our KafkaConsumer class where we now have a single bean returing a void Consumer<KStream<String, PosInvoice>> method, and constructing our hadoopRecordKStream and notificationKStream records before publishing them to their own topics.    
 
 
+### 7) xml-pos-consumer (Project: xml-pos-consumer) - Input format: xml & Output format: json
+
+a. In this example we will send our input messages in xml format, and send the out back to our topic in json format.    
+
+b. All steps for generating the xml class file is the same as before but the dependency for this is a bit different as given in the pom.xml file.   
+
 
    
+
+
 
 
 
