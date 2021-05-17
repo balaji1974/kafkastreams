@@ -22,7 +22,7 @@ repartition, selectKey, groupBy, groupByKey, join -> Methods for grouping, aggri
 
 # KTable -> Same key get updated and when we send a null value the key gets removed.     
 
-### 1) Stream-Listener (Project: stream-listener)
+### 1) Stream-Listener (Project: stream-listener) - Using KStreams
 
 a. Add the following dependencies in the pom.xml:    
 ```xml
@@ -149,7 +149,7 @@ f. Next we add the 3 services under the service folder. A main service called Ka
 g. Thats it. Start the project and we can see invoices being produced randomly to our avro-pos-topic topic.    
 
 
-### 4) Json Pos-Consumer (Project: json-pos-consumer) - Input format: Json & Output format: Avro
+### 4) Json Pos-Consumer (Project: json-pos-consumer) - Input format: Json & Output format: Avro - Using KStreams    
 
 a. This project has three requriments:
 If the invoice type is "HOME-DELIVERY" then push the invoice to the shipment topic.    
@@ -187,7 +187,7 @@ e. We will create 3 beans in our Kafka consumer class which will perform the nec
 
 f. Thats it. Start the producer, and run the consumer to check if the data is properly produced to the 3 topics that we defined in our properties file.     
 
-### 5) Avro Pos-Consumer (Project: avro-pos-consumer) - Input format: Avro & Output format: Json
+### 5) Avro Pos-Consumer (Project: avro-pos-consumer) - Input format: Avro & Output format: Json - Using KStreams    
 
 a. This project has the same requriments as the previous example. except that instead of Json input we get Avro input format and we must publish back Json format data to the topics.
 
@@ -214,7 +214,7 @@ This is a mapping of our input (Avro format) and our output (Json format).
 
 f. Now start the producer and run the consumer to check if everything works fine.    
 
-### 6) exactly-once-consumer (Project: exactly-once-consumer) - Input format: Avro & Output format: Avro    
+### 6) exactly-once-consumer (Project: exactly-once-consumer) - Input format: Avro & Output format: Avro - Using KStreams    
 
 a. In our previous example we used 2 different listeners to read from the same topic which is a waste of resource when we can just read one time from the same topic and process our result and then publish it back to two different topics.  This example exactly does that.     
 
@@ -226,14 +226,63 @@ c. Apart from this all other steps like, using avro files to generate avro schem
 d. The only difference is in our KafkaConsumer class where we now have a single bean returing a void Consumer<KStream<String, PosInvoice>> method, and constructing our hadoopRecordKStream and notificationKStream records before publishing them to their own topics.    
 
 
-### 7) xml-pos-consumer (Project: xml-pos-consumer) - Input format: xml & Output format: json
+### 7) xml-pos-consumer (Project: xml-pos-consumer) - Input format: xml & Output format: json - Using KStreams    
 
 a. In this example we will send our input messages in xml format, and send the out back to our topic in json format.    
 
-b. All steps for generating the xml class file is the same as before but the dependency for this is a bit different as given in the pom.xml file.   
+b. All steps for generating the xml class file is the same as before but the dependency for this is a bit different as given in the pom.xml file:
 
+```xml 
+<!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
+<dependency>
+    <groupId>javax.xml.bind</groupId>
+    <artifactId>jaxb-api</artifactId>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-core -->
+<dependency>
+    <groupId>com.sun.xml.bind</groupId>
+    <artifactId>jaxb-core</artifactId>
+    <version>3.0.1</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-impl -->
+<dependency>
+    <groupId>com.sun.xml.bind</groupId>
+    <artifactId>jaxb-impl</artifactId>
+    <version>3.0.1</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/javax.activation/activation -->
+<dependency>
+    <groupId>javax.activation</groupId>
+    <artifactId>activation</artifactId>
+    <version>1.1.1</version>
+</dependency>
+```
 
-   
+c. And the below maven plugin is used for generating the java source files from the xml files:   
+```xml 
+<plugin>
+		<groupId>org.codehaus.mojo</groupId>
+		<artifactId>jaxb2-maven-plugin</artifactId>
+		<version>2.5.0</version>
+		<executions>
+			<execution> 
+				<id>xjc</id>
+				<goals>
+					<goal>xjc</goal>
+				</goals>
+			</execution>
+		</executions>
+		<configuration>
+			<sources>
+				<source>${project.basedir}/src/main/resources/schema</source>
+			</sources>
+			<packageName>com.bala.kafkastreams.model</packageName>
+		</configuration>
+	</plugin>
+</plugins>
+```
+
+### 8) 
 
 
 
