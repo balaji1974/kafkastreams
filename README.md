@@ -21,7 +21,7 @@ to -> is used to send messages to a Kafka topic
 toTable-> is used to convert KStream to a KTable    
 repartition, selectKey, groupBy, groupByKey, join -> Methods for grouping, aggrigation and joining    
 
-# KTable -> Same key get updated and when we send a null value the key gets removed. Null key is not permitted here. Also data gets stored in an intermediate RocksDB database until the commit interval and hence same key sent during this period will send only the last key-value pair to the output stream.    
+# KTable(key,value pair) -> Same key get updated and when we send a null value the key gets removed. Null key is not permitted here. Also data gets stored in an intermediate RocksDB database until the commit interval and hence same key sent during this period will send only the last key-value pair to the output stream.    
 
 ### 1) Stream-Listener (Project: stream-listener) - Using KStreams
 
@@ -310,25 +310,26 @@ b. We will have our usual dependency for this project which would be as follows:
 c. Next we add the following properties in our application.properties file:   
 ```xml 
 spring.cloud.stream.function.definition=processKTable
-spring.cloud.stream.bindings.processKTable-in-0.destination=stock-tick-topic
+spring.cloud.stream.bindings.processKTable-in-0.destination=auction-price-ticker
+
 
 spring.cloud.stream.kafka.streams.binder.brokers=localhost:9092
 #default is 30K milliseconds for records to be stored in the local rocksdb before committing it
 spring.cloud.stream.kafka.streams.binder.configuration.commit.interval.ms=10000
 # this is the name of the local rocksdb database
-spring.cloud.stream.kafka.streams.binder.configuration.state.dir=state-store
+spring.cloud.stream.kafka.streams.binder.configuration.state.dir=application-state-store
 # this is the name of the Ktable inside the local rocksdb database
-spring.cloud.stream.kafka.streams.bindings.processKTable-in-0.consumer.materialized-as=stock-input-store
+spring.cloud.stream.kafka.streams.bindings.processKTable-in-0.consumer.materialized-as=auction-price-store
 ```
 
-d. Finally we process our incomming message using the processKTable() function inside the KafkaConsumer class where we filter out all messages other than the 'HDFCBANK' message.   
+d. Finally we process our incomming message using the processKTable() function inside the KafkaConsumer class where we filter out all messages other than the 'EDMUNDKNIFE' message.   
 
 e. We can test our consumer using a producer console with few sample data as follows:   
-HDFCBANK:2120    
-HDFCBANK:2150    
-HDFCBANK:2180    
+EDMUNDKNIFE:10500    
+EDMUNDKNIFE:10700    
+EDMUNDKNIFE:12000    
     
-TCS:2920    
+NEWLANDPAINTING:95000    
 
 e. This is a simple example to show how a KTable functions.    
 

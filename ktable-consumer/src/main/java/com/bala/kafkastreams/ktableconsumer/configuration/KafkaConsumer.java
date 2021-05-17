@@ -14,17 +14,17 @@ public class KafkaConsumer {
 	
 	
 	/* Sample Data
-	 * HDFCBANK:2120
-	 * HDFCBANK:2150
-	 * HDFCBANK:2180
+	 * EDMUNDKNIFE:10500
+	 * EDMUNDKNIFE:10700
+	 * EDMUNDKNIFE:12000
 	 *	
-	 * TCS:2920
+	 * NEWLANDPAINTING:95000
 	 */
 	
 	@Bean
     public Consumer<KTable<String, String>> processKTable() { // This method name is used in application.properties
 		Consumer<KTable<String,String>> consumer= (KTable<String,String> kTable) -> {
-			kTable.filter((key, value) -> key.contains("HDFCBANK")) // Code to filter out all other records and accept only HDFCBANK records
+			kTable.filter((key, value) -> key.contains("EDMUNDKNIFE")) // Code to filter out all other records and accept only EDMUNDKNIFE record
             .toStream()
             .foreach((k, v) -> log.info("Key: " + k + " Value: " + v));
 		};
