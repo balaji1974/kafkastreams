@@ -9,7 +9,8 @@ bin/kafka-server-start.sh config/server.properties
 ### For more details on the above commands please refer to my kafka reposiory.   
 
 
-# Important KStream methods: -> KStream(key,value pair) ->  Same key gets inserted multiple times     
+# Important KStream methods: ->     
+# KStream(key,value pair) ->  Same key gets inserted multiple times     
 filter, filterNot    
 map, mapValues -> one to one     
 flatMap, flatMapValues -> one to many     
