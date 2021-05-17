@@ -21,7 +21,7 @@ to -> is used to send messages to a Kafka topic
 toTable-> is used to convert KStream to a KTable    
 repartition, selectKey, groupBy, groupByKey, join -> Methods for grouping, aggrigation and joining    
 
-# KTable -> Same key get updated and when we send a null value the key gets removed.     
+# KTable -> Same key get updated and when we send a null value the key gets removed. Null key is not permitted here. Also data gets stored in an intermediate RocksDB database until the commit interval and hence same key sent during this period will send only the last key-value pair to the output stream.    
 
 ### 1) Stream-Listener (Project: stream-listener) - Using KStreams
 
