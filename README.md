@@ -325,13 +325,56 @@ spring.cloud.stream.kafka.streams.bindings.processKTable-in-0.consumer.materiali
 d. Finally we process our incomming message using the processKTable() function inside the KafkaConsumer class where we filter out all messages other than the 'EDMUNDKNIFE' message.   
 
 e. We can test our consumer using a producer console with few sample data as follows:   
+Create a topic -     
+bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic auction-price-ticker           
+    
+Create a console producer -    
+bin/kafka-console-producer.sh --topic auction-price-ticker --broker-list localhost:9092 --property parse.key=true --property key.separator=":"       
+
+Send sample messages -     
 EDMUNDKNIFE:10500    
 EDMUNDKNIFE:10700    
 EDMUNDKNIFE:12000    
     
 NEWLANDPAINTING:95000    
 
-e. This is a simple example to show how a KTable functions.    
+f. Start the application and check the result. This is a simple example to show how a KTable functions.    
+
+### 9) Streaming Word Counter (Project: kstream-word-counter)  - Using KStream    
+a. This project is used to count the number of words in our stream of data.    
+
+b. All dependencies for this project are the same as before.    
+
+c. Next we add the following properties in our application.properties file:   
+```xml 
+spring.cloud.stream.function.definition=processKStream
+spring.cloud.stream.bindings.processKStream-in-0.destination=streaming-word-counter
+
+spring.cloud.stream.kafka.streams.binder.brokers=localhost:9092
+#default is 30K milliseconds for records to be stored in the local rocksdb before committing it
+spring.cloud.stream.kafka.streams.binder.configuration.commit.interval.ms=10000
+# this is the name of the local rocksdb database
+spring.cloud.stream.kafka.streams.binder.configuration.state.dir=application-state-store
+spring.cloud.stream.kafka.streams.binder.configuration.default.key.serde=org.apache.kafka.common.serialization.Serdes$StringSerde
+spring.cloud.stream.kafka.streams.binder.configuration.default.value.serde=org.apache.kafka.common.serialization.Serdes$StringSerde   
+```
+
+d. Next we process our incomming message using the processKStream() function inside the KafkaConsumer class where we first split our words into a null value key and the word as the value of the KStream object. Next we use the groupBy function were the values are exchanged as keys and count applied on the value. The result is a KTable which is then converted to a KStream object which is then sent to the output stream or printed.    
+
+e. We can test our consumer using a producer console with few sample data as follows:   
+Create a topic -     
+bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic streaming-word-counter           
+    
+Create a console producer -    
+bin/kafka-console-producer.sh --topic streaming-word-counter --broker-list localhost:9092        
+
+Send sample messages -     
+Hello Balaji    
+How are you doing Balaji    
+How are things at your end?      
+
+f. Start the application and check the count result.    
+
 
 
 
