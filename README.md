@@ -226,7 +226,7 @@ c. Apart from this all other steps like, using avro files to generate avro schem
 d. The only difference is in our KafkaConsumer class where we now have a single bean returing a void Consumer<KStream<String, PosInvoice>> method, and constructing our hadoopRecordKStream and notificationKStream records before publishing them to their own topics.    
 
 
-### 7) xml-pos-consumer (Project: xml-pos-consumer) - Input format: xml & Output format: json - Using KStreams    
+### 7) XML Pos-Consumer (Project: xml-pos-consumer) - Input format: xml & Output format: json - Using KStreams    
 
 a. In this example we will send our input messages in xml format, and send the out back to our topic in json format.    
 
@@ -261,28 +261,76 @@ b. All steps for generating the xml class file is the same as before but the dep
 c. And the below maven plugin is used for generating the java source files from the xml files:   
 ```xml 
 <plugin>
-		<groupId>org.codehaus.mojo</groupId>
-		<artifactId>jaxb2-maven-plugin</artifactId>
-		<version>2.5.0</version>
-		<executions>
-			<execution> 
-				<id>xjc</id>
-				<goals>
-					<goal>xjc</goal>
-				</goals>
-			</execution>
-		</executions>
-		<configuration>
-			<sources>
-				<source>${project.basedir}/src/main/resources/schema</source>
-			</sources>
-			<packageName>com.bala.kafkastreams.model</packageName>
-		</configuration>
-	</plugin>
-</plugins>
+	<groupId>org.codehaus.mojo</groupId>
+	<artifactId>jaxb2-maven-plugin</artifactId>
+	<version>2.5.0</version>
+	<executions>
+		<execution> 
+			<id>xjc</id>
+			<goals>
+				<goal>xjc</goal>
+			</goals>
+		</execution>
+	</executions>
+	<configuration>
+		<sources>
+			<source>${project.basedir}/src/main/resources/schema</source>
+		</sources>
+		<packageName>com.bala.kafkastreams.model</packageName>
+	</configuration>
+</plugin>
 ```
 
-### 8) 
+### 8) KTable Demo (Project: ktable-consumer)  - Using KTable    
+
+a. A KTable differs from the KStream in the way it proceesses messages. It stores the message in a local rocksdb database and sends it to the output stream after a given interval. During this time when repeated key is sent the message is overwritten by the same key, which is the nature of a KTable and hence only the last message gets to the output stream.     
+
+b. We will have our usual dependency for this project which would be as follows:    
+```xml 
+<dependency>
+	<groupId>org.apache.kafka</groupId>
+	<artifactId>kafka-streams</artifactId>
+</dependency>
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-stream</artifactId>
+</dependency>
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-stream-binder-kafka-streams</artifactId>
+</dependency>
+<dependency>
+	<groupId>org.projectlombok</groupId>
+	<artifactId>lombok</artifactId>
+	<optional>true</optional>
+</dependency>
+```
+
+c. Next we add the following properties in our application.properties file:   
+```xml 
+spring.cloud.stream.function.definition=processKTable
+spring.cloud.stream.bindings.processKTable-in-0.destination=stock-tick-topic
+
+spring.cloud.stream.kafka.streams.binder.brokers=localhost:9092
+#default is 30K milliseconds for records to be stored in the local rocksdb before committing it
+spring.cloud.stream.kafka.streams.binder.configuration.commit.interval.ms=10000
+# this is the name of the local rocksdb database
+spring.cloud.stream.kafka.streams.binder.configuration.state.dir=state-store
+# this is the name of the Ktable inside the local rocksdb database
+spring.cloud.stream.kafka.streams.bindings.processKTable-in-0.consumer.materialized-as=stock-input-store
+```
+
+d. Finally we process our incomming message using the processKTable() function inside the KafkaConsumer class where we filter out all messages other than the 'HDFCBANK' message.   
+
+e. We can test our consumer using a producer console with few sample data as follows:   
+HDFCBANK:2120    
+HDFCBANK:2150    
+HDFCBANK:2180    
+    
+TCS:2920    
+
+e. This is a simple example to show how a KTable functions.    
+
 
 
 
