@@ -394,6 +394,30 @@ How are things at your end?
 
 f. Start the application and check the count result.    
 
+### 10) Calculating the total from a stream of data (Project: kstream-reduce-consumer)  - Input format: avr0 & Output format: avro - Using KStream    
+a. This project is used to calculate the total loyality points from a stream of data that comes from a Kafka producer.     
+
+b. We use our Avro POS generator to generate data for this consumer to consume.    
+
+c. We genrate Avro classes for the given 4 avro objects. Next we set our configuration in our application.properties files as follows. This is fairly straight forward and discussed in length before:     
+```xml 
+spring.cloud.stream.function.definition=processNotificationRecords
+spring.cloud.stream.bindings.processNotificationRecords-in-0.destination=avro-pos-topic
+spring.cloud.stream.bindings.processNotificationRecords-out-0.destination=loyalty-topic
+
+spring.cloud.stream.kafka.streams.binder.brokers=localhost:9092
+spring.cloud.stream.kafka.streams.binder.configuration.schema.registry.url=http://localhost:8081
+spring.cloud.stream.kafka.streams.binder.configuration.commit.interval.ms=10000
+spring.cloud.stream.kafka.streams.binder.configuration.state.dir=application-state-store
+spring.cloud.stream.kafka.streams.binder.configuration.default.key.serde=org.apache.kafka.common.serialization.Serdes$StringSerde
+spring.cloud.stream.kafka.streams.binder.configuration.default.value.serde=io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
+```
+
+d. Finally we create our Kafka configuration class that receives the stream of POS invoice data from the input channel, convert it to the output Notification object format, compute the accmulated loayalty points,  prints the accumulated points, and finally the sends the output data to the output topic.    
+
+e. The function processNotificationRecords() is self expalinatory with all the comments.    
+
+
 
 
 

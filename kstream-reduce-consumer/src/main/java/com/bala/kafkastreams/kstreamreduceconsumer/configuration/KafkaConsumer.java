@@ -24,19 +24,16 @@ public class KafkaConsumer {
 	@Bean
     public Function<KStream<String, PosInvoice>, KStream<String, Notification>> processNotificationRecords() {
 		Function<KStream<String, PosInvoice>, KStream<String, Notification>> output =  (KStream<String, PosInvoice> input) -> {
-			return input.filter((k, v) -> v.getCustomerType().equalsIgnoreCase("PRIME"))
-            .map((k, v) -> new KeyValue<>(v.getCustomerCardNo(), recordBuilder.getNotification(v)))
-            .groupByKey()
-            .reduce((aggValue, newValue) -> {
+			KStream<String, Notification> notificationKStream = input.filter((k, v) -> v.getCustomerType().equalsIgnoreCase("PRIME")) // Filter by Prime customers 
+            .map((k, v) -> new KeyValue<>(v.getCustomerCardNo(), recordBuilder.getNotification(v))) // Change the key from customer id to customer card no
+            .groupByKey() // use this customer card no key and group by it 
+            .reduce((aggValue, newValue) -> { // Create a new notification object with the agg. total of the old/existing notification data 
                 newValue.setTotalLoyaltyPoints(newValue.getEarnedLoyaltyPoints() + aggValue.getTotalLoyaltyPoints());
-                return newValue;
+                return newValue; // return the new notification object
             })
-            .toStream()
-            .peek((k, v) -> log.info(String.format("Notification:- Key: %s, Value: %s", k, v)))
-            ;
-
-			//notificationKStream.foreach((k, v) -> log.info(String.format("Notification:- Key: %s, Value: %s", k, v)));
-			//return notificationKStream;
+            .toStream(); 
+            notificationKStream.foreach((k, v) -> log.info(String.format("Notification:- Key: %s, Value: %s", k, v)));
+			return notificationKStream;
 		};
 		return output;
 	}
