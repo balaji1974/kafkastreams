@@ -394,7 +394,7 @@ How are things at your end?
 
 f. Start the application and check the count result.    
 
-### 10) Calculating the total from a stream of data (Project: kstream-reduce-consumer)  - Input format: avr0 & Output format: avro - Using KStream    
+### 10) Calculating the total from a stream of data (Project: kstream-reduce-consumer)  - Input format: avr0 & Output format: avro - Using KStream's reduce function.   
 a. This project is used to calculate the total loyality points from a stream of data that comes from a Kafka producer.     
 
 b. We use our Avro POS generator to generate data for this consumer to consume.    
