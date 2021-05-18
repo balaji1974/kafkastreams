@@ -8,9 +8,14 @@ bin/kafka-server-start.sh config/server.properties
 
 ### For more details on the above commands please refer to my kafka reposiory.   
 
+    
+# KStream(key,value pair)    
+##Same key gets inserted multiple times     
 
-# Important KStream methods: ->     
-# KStream(key,value pair) ->  Same key gets inserted multiple times     
+# KTable(key,value pair)     
+## Same key get updated and when we send a null value the key gets removed. Null key is not permitted here. Also data gets stored in an intermediate RocksDB database until the commit interval and hence same key sent during this period will send only the last key-value pair to the output stream.    
+
+## Important KStream methods: ->     
 filter, filterNot    
 map, mapValues -> one to one     
 flatMap, flatMapValues -> one to many     
@@ -21,7 +26,21 @@ to -> is used to send messages to a Kafka topic
 toTable-> is used to convert KStream to a KTable    
 repartition, selectKey, groupBy, groupByKey, join -> Methods for grouping, aggrigation and joining    
 
-# KTable(key,value pair) -> Same key get updated and when we send a null value the key gets removed. Null key is not permitted here. Also data gets stored in an intermediate RocksDB database until the commit interval and hence same key sent during this period will send only the last key-value pair to the output stream.    
+## Grouping Methods    
+KStream -> groupBy(), groupByKey()    
+KTable -> groupBy()    
+
+## Aggregation Methods    
+count()    
+reduce()    
+aggregate()    
+
+## Key Preserving APIs is preferred    
+mapValues(), flatMapValues(), transformValues(), groupByKey()     
+
+## Key Changing APIs is not preferred as it will cause data to shuffle sort which is an expensive operation    
+map(), flatMap(), transform(), groupBy()     
+
 
 ### 1) Stream-Listener (Project: stream-listener) - Using KStreams
 
