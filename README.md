@@ -418,9 +418,103 @@ d. Finally we create our Kafka configuration class that receives the stream of P
 e. The function processNotificationRecords() is self expalinatory with all the comments.    
 
 ### 11) Calculating the average from a stream of data (Project: kstream-aggregate-consumer)  - Input format: avro & Output format: avro - Using KStream's aggregate function.  
+a. This project is used to calculate the average departmenet salaries of employees from a stream of data that comes from a Kafka producer (AVRO format)    
 
+b. We need the following dependencies in our pom.xml    
+```xml 
+<dependency>
+	<groupId>org.apache.kafka</groupId>
+	<artifactId>kafka-streams</artifactId>
+</dependency>
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-stream</artifactId>
+</dependency>
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-stream-binder-kafka-streams</artifactId>
+</dependency>
 
+<dependency>
+	<groupId>org.projectlombok</groupId>
+	<artifactId>lombok</artifactId>
+	<optional>true</optional>
+</dependency>
+<dependency>
+    <groupId>org.apache.avro</groupId>
+    <artifactId>avro</artifactId>
+    <version>1.10.2</version>
+</dependency>
+<dependency>
+	<groupId>io.confluent</groupId>
+	<artifactId>kafka-streams-avro-serde</artifactId>
+	<version>6.1.1</version>
+</dependency>
+```
 
+c. We generate the Java friendly avro classes with the maven plugin:    
+```xml 
+<plugin>
+	<groupId>org.apache.avro</groupId>
+	<artifactId>avro-maven-plugin</artifactId>
+	<version>1.9.2</version> <!-- Note: 1.10.x is not working correctly and hence used a lower version -->
+	<executions>
+		<execution>
+			<phase>generate-sources</phase>
+			<goals>
+				<goal>schema</goal>
+			</goals>
+			<configuration>
+				<sourceDirectory>src/main/avro</sourceDirectory>
+				<outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
+				<stringType>String</stringType>
+			</configuration>
+		</execution>
+	</executions>
+</plugin>
+```
+
+d. Next the configure our topics in our application.properties files as below:    
+```xml 
+spring.cloud.stream.function.definition=processAggregateRecords
+spring.cloud.stream.bindings.processAggregateRecords-in-0.destination=employees-topic
+
+spring.cloud.stream.kafka.streams.binder.brokers=localhost:9092
+spring.cloud.stream.kafka.streams.binder.configuration.schema.registry.url=http://localhost:8081
+spring.cloud.stream.kafka.streams.binder.configuration.commit.interval.ms=10000
+spring.cloud.stream.kafka.streams.binder.configuration.state.dir=application-state-store
+spring.cloud.stream.kafka.streams.binder.configuration.default.key.serde=org.apache.kafka.common.serialization.Serdes$StringSerde
+spring.cloud.stream.kafka.streams.binder.configuration.default.value.serde=io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
+```
+
+e. Next in our configuration package we put all our business logic under the function called processAggregateRecords(). Check the comments of this code for more explaination.    
+
+f. Finally we start our zookeeper, kafka and confluent schema registry.     
+
+g. Next we create the topic, and create a kafka avro console producer (special type in conflent kafka) using the below commands:     
+```xml
+bin/schema-registry-start etc/schema-registry/schema-registry.properties
+
+bin\kafka-avro-console-producer --broker-list localhost:9092 --topic employees-topic \
+--property value.schema='{"namespace": "guru.learningjournal.examples.kafka.model","type": "record","name": "Employee","fields": [{"name": "id","type": "string"},{"name": "name","type": "string"},{"name": "department","type": "string"},{"name": "salary","type":"int"}]}'
+```
+
+h. Next we can produce some sample avro formatted messages as below:    
+```xml
+{"id": "101", "name": "Prashant", "department": "engineering", "salary": 5000}
+{"id": "102", "name": "John", "department": "accounts", "salary": 8000}
+{"id": "103", "name": "Abdul", "department": "engineering", "salary": 3000}
+{"id": "104", "name": "Melinda", "department": "support", "salary": 7000}
+{"id": "105", "name": "Jimmy", "department": "support", "salary": 6000}
+```
+i. Next we start our consumer and check if the averages are computed correctly.     
+
+j. But we have one problem with this approach. Since KStreams is a continous stream of new data, average will not be computed correctly if we insert some changes to our original data sent like below:    
+```xml
+{"id": "101", "name": "Prashant", "department": "support", "salary": 5000}
+{"id": "104", "name": "Melinda", "department": "engineering", "salary": 7000}
+```
+k. The solution to this problem is KTable and in such use cases where the originally sent data needs to be changed we need to use a KTable which preserves the key and updates the record if the same key comes back once again.   
 
 
 
