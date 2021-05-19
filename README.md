@@ -509,13 +509,19 @@ h. Next we can produce some sample avro formatted messages as below:
 ```
 i. Next we start our consumer and check if the averages are computed correctly.     
 
-j. But we have one problem with this approach. Since KStreams is a continous stream of new data, average will not be computed correctly if we insert some changes to our original data sent like below:    
+j. But we have one problem with this approach. Since KStreams is a continous stream of new data(insert only), average will not be computed correctly if we insert some changes to our original data sent like below:    
 ```xml
 {"id": "101", "name": "Prashant", "department": "support", "salary": 5000}
 {"id": "104", "name": "Melinda", "department": "engineering", "salary": 7000}
 ```
 k. The solution to this problem is KTable and in such use cases where the originally sent data needs to be changed we need to use a KTable which preserves the key and updates the record if the same key comes back once again.   
+### 11) Calculating the average from a KTable of data (Project: ktable-aggregate-consumer)  - Input format: avro & Output format: avro - Using KTables's aggregate function.     
 
+a. We had a problem with our earlier example, if the same record comes over again, the average is not computed correctly, so this solution is using KTable's aggregate to solve this problem     
+
+b. Everything remains the same as our last project execpt for the implementation function in our configuration class processAggregateRecords(). Check the comments of this code for more explaination.   
+
+c. Run the example using the same steps and data as the last problem and check the output of the computation.   
 
 
 
