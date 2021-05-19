@@ -42,6 +42,12 @@ mapValues(), flatMapValues(), transformValues(), groupByKey()
 map(), flatMap(), transform(), groupBy()     
 
 
+## Time Schematics    
+Event Time - The time when the event was produced (Custom Timestamp extractor must be used for this)     
+Ingestion Time - The time when the record reached the broker (this can be got by setting the flag message.timestamp.type=LogAppendTime) (Extractor that can be used - FailOnInvalidTimestamp, LogAndSkipOnInvalidTimestamp, UsePreviousTimeOnInvalidTimestamp) 
+Processing Time - The time the message was processed by the broker (Extractor to use - WallclockTimestampExtractor)     
+
+
 ### 1) Stream-Listener (Project: stream-listener) - Using KStreams
 
 a. Add the following dependencies in the pom.xml:    
@@ -495,7 +501,7 @@ g. Next we create the topic, and create a kafka avro console producer (special t
 ```xml
 bin/schema-registry-start etc/schema-registry/schema-registry.properties
 
-bin\kafka-avro-console-producer --broker-list localhost:9092 --topic employees-topic \
+bin/kafka-avro-console-producer --broker-list localhost:9092 --topic employees-topic \
 --property value.schema='{"namespace": "guru.learningjournal.examples.kafka.model","type": "record","name": "Employee","fields": [{"name": "id","type": "string"},{"name": "name","type": "string"},{"name": "department","type": "string"},{"name": "salary","type":"int"}]}'
 ```
 
@@ -519,9 +525,34 @@ k. The solution to this problem is KTable and in such use cases where the origin
 
 a. We had a problem with our earlier example, if the same record comes over again, the average is not computed correctly, so this solution is using KTable's aggregate to solve this problem     
 
-b. Everything remains the same as our last project execpt for the implementation function in our configuration class processAggregateRecords(). Check the comments of this code for more explaination.   
+b. Everything remains the same as our last project execpt for the implementation function in our configuration KafkaConsumer class's processAggregateRecords() method. Check the comments of this code for more explaination.    
 
 c. Run the example using the same steps and data as the last problem and check the output of the computation.   
+
+### 12) Count the total records in a given time frame (Project: windowing-aggregate-consumer)  - Input format: json - Using KStream's windowedBy() function.     
+
+a. The dependencies needed are stright forward as per the pom.xml file and the application.properties are also the same, except for one new parameter     
+```xml
+spring.cloud.stream.kafka.streams.bindings.processWindowAggregateRecords-in-0.consumer.timestamp-extractor-bean-name=invoiceTimesExtractor
+```
+
+b. This will call a custome invoiceTimeExtractor class which implements the TimestampExtractor. The extract method will check the recevied invoice to see if it has the createdTimestamp and if now it will set the previous timestamp.   
+
+c. Next check the implementation function in our configuration KafkaConsumer class's processWindowAggregateRecords() method. Check the comments of this code for more explaination.     
+
+d. Start the server, create the input topic and produce some sample data as follows:     
+```xml
+STR1534:{"InvoiceNumber": 101,"CreatedTime": "1549360860000","StoreID": "STR1534", "TotalAmount": 1920}
+STR1535:{"InvoiceNumber": 102,"CreatedTime": "1549360900000","StoreID": "STR1535", "TotalAmount": 1860}
+STR1534:{"InvoiceNumber": 103,"CreatedTime": "1549360999000","StoreID": "STR1534", "TotalAmount": 2400}
+
+STR1536:{"InvoiceNumber": 104,"CreatedTime": "1549361160000","StoreID": "STR1536", "TotalAmount": 8936}
+STR1534:{"InvoiceNumber": 105,"CreatedTime": "1549361270000","StoreID": "STR1534", "TotalAmount": 6375}
+STR1536:{"InvoiceNumber": 106,"CreatedTime": "1549361370000","StoreID": "STR1536", "TotalAmount": 9365}
+```
+
+e. Start the application and check the output after running the 1st 3 sample data and then run the next set of 3 sample data to check the output.    
+
 
 
 
