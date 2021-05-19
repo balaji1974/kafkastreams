@@ -521,7 +521,8 @@ j. But we have one problem with this approach. Since KStreams is a continous str
 {"id": "104", "name": "Melinda", "department": "engineering", "salary": 7000}
 ```
 k. The solution to this problem is KTable and in such use cases where the originally sent data needs to be changed we need to use a KTable which preserves the key and updates the record if the same key comes back once again.   
-### 11) Calculating the average from a KTable of data (Project: ktable-aggregate-consumer)  - Input format: avro & Output format: avro - Using KTables's aggregate function.     
+
+### 12) Calculating the average from a KTable of data (Project: ktable-aggregate-consumer)  - Input format: avro & Output format: avro - Using KTables's aggregate function.     
 
 a. We had a problem with our earlier example, if the same record comes over again, the average is not computed correctly, so this solution is using KTable's aggregate to solve this problem     
 
@@ -529,7 +530,9 @@ b. Everything remains the same as our last project execpt for the implementation
 
 c. Run the example using the same steps and data as the last problem and check the output of the computation.   
 
-### 12) Count the total records in a given time frame (Project: windowing-aggregate-consumer)  - Input format: json - Using KStream's windowedBy() function.     
+
+
+### 13) Count the total records in a given time frame (Project: windowing-aggregate-consumer)  - Input format: json - Using KStream's windowedBy() function.     
 
 a. The dependencies needed are stright forward as per the pom.xml file and the application.properties are also the same, except for one new parameter     
 ```xml
