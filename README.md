@@ -41,11 +41,28 @@ mapValues(), flatMapValues(), transformValues(), groupByKey()
 ## Key Changing APIs is not preferred as it will cause data to shuffle sort which is an expensive operation    
 map(), flatMap(), transform(), groupBy()     
 
-
 ## Time Schematics    
 Event Time - The time when the event was produced (Custom Timestamp extractor must be used for this)     
 Ingestion Time - The time when the record reached the broker (this can be got by setting the flag message.timestamp.type=LogAppendTime) (Extractor that can be used - FailOnInvalidTimestamp, LogAndSkipOnInvalidTimestamp, UsePreviousTimeOnInvalidTimestamp) 
 Processing Time - The time the message was processed by the broker (Extractor to use - WallclockTimestampExtractor)     
+
+## Windowing    
+Tumbiling window - Fixed interval and no overlap    
+Hopping window - Fixed interval and overlap    
+Session Windows - No fixed interval, based on user sessions    
+
+## Joins    
+KStream - KStream (Inner, Left, Right, Outer) - Windowed - Result will be KStream     
+KTable - KTable (Inner, Left, Right, Outer) - Non-Windowed  - Result will be KTable     
+KStream - KTable (Inner, Left, Outer) - Non-Windowed - Result will be KStream     
+KStream - GlobalKTable (Inner, Left) - Non-Windowed - Result will be KStream     
+
+### Pre-conditions for joins:   
+KStream / KTable must have a valid key (except for KStream - GlobalKTable joins)    
+All topics must have the same number of partitions    
+Data in the topics must be co-partitioned (except for KStream - GlobalKTable joins)    
+KStream must be on the left side of the join    
+
 
 
 ### 1) Stream-Listener (Project: stream-listener) - Using KStreams
@@ -556,13 +573,52 @@ STR1536:{"InvoiceNumber": 106,"CreatedTime": "1549361370000","StoreID": "STR1536
 
 e. Start the application and check the output after running the 1st 3 sample data and then run the next set of 3 sample data to check the output.    
 
-f. Note: We have 3 types of windowing -> Tumbiling window (Fixed interval - no overlap), Hopping window (Fixed interval - overlap) and Session Windows (Not fixed interval - check the commented secion of the config class)    
+f. Note: We have 3 types of windowing -> Tumbiling window (Fixed interval - no overlap), Hopping window (Fixed interval - overlap) and Session Windows (Not fixed interval - check the commented section of the config class)    
+
+
+### 14) Join two KSteams to produce results (Project: kstream-kstream-joins)  - Input format: json    
+
+a. Often we can have use uses where we need to join 2 different input streams and check for something. Lets take a case where we have a stream that produces some payment information. Aother stream produces pay confirmation key based on this payment. We need to commit our transaction only if this payment confirmation is got against the payment stream. In such cases we need to join both these streams against a unique transaction id and check send confirmation to either an output stream or to the console.     
+
+b. All our dependencies are same as our last project, but in our application.properties file we have 2 input streams and we have 2 timestamp-extractor-bean-name, one for each of the input streams.       
+```xml
+spring.cloud.stream.bindings.process-in-0.destination=payment_request
+spring.cloud.stream.bindings.process-in-1.destination=payment_confirmation
+
+spring.cloud.stream.kafka.streams.bindings.process-in-0.consumer.timestamp-extractor-bean-name=requestTimeExtractor
+spring.cloud.stream.kafka.streams.bindings.process-in-1.consumer.timestamp-extractor-bean-name=confirmationTimeExtractor
+```
+
+c. Next we create our Json model classes, the time stamp extractor classes (same like last example)   
+
+d. Next we create our bussiness login in the RecordBuilder class, where we take both our PaymentRequest and PaymentConfirmation request, check their OTPs to see if they are equal. If yes, then we set the status flag to Sucess.    
+
+e. Finally in our KafkaConsumer class we use a BiConsumer Bean to take the 2 input streams, use the join method to join them. This class has comments which explains the logic in this code.    
+
+f. Create the 2 topics and create 2 console producers:     
+```xml
+bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic payment_request
+bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic payment_confirmation
+
+bin/kafka-console-producer.sh --broker-list localhost:9092 --topic payment_request --property parse.key=true --property key.separator=":"
+bin/kafka-console-producer.sh --broker-list localhost:9092 --topic payment_confirmation --property parse.key=true --property key.separator=":"
+```
+g. Start the application and send the sample data to check.        
+```xml   
+100001:{"TransactionID": "100001", "CreatedTime": 1550149860000, "SourceAccountID": "131100", "TargetAccountID": "151837", "Amount": 3000, "OTP": 852960}
+100002:{"TransactionID": "100002", "CreatedTime": 1550149920000, "SourceAccountID": "131200", "TargetAccountID": "151837", "Amount": 2000, "OTP": 931749}
+100003:{"TransactionID": "100003", "CreatedTime": 1550149980000, "SourceAccountID": "131300", "TargetAccountID": "151837", "Amount": 5000, "OTP": 591296}
+100004:{"TransactionID": "100004", "CreatedTime": 1550150100000, "SourceAccountID": "131400", "TargetAccountID": "151837", "Amount": 1000, "OTP": 283084}
+
+100001:{"TransactionID": "100001", "CreatedTime": 1550150100000, "OTP": 852960}
+100002:{"TransactionID": "100002", "CreatedTime": 1550150280000, "OTP": 931749}
+100004:{"TransactionID": "100004", "CreatedTime": 1550150040000, "OTP": 283086}
+```
 
 
 
 
-
-
-
+References:    
+https://www.udemy.com/course/kafka-streams-with-spring-cloud-streams    
 
 
