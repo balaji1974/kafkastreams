@@ -615,6 +615,21 @@ g. Start the application and send the sample data to check.
 100004:{"TransactionID": "100004", "CreatedTime": 1550150040000, "OTP": 283086}
 ```
 
+### 15) Join two KTable to produce results (Project: ktable-ktable-joins)  - Input format: json    
+
+a. This project uses the join concept on two KTables. It is exactly the same as the last project except in the properties file where timestamp-extractor-bean-name is not needed. What it does is join an UserDetails class with the UserLogin class to update the last login of the user in the UserDetails class. It is a very simple example to check the concept of joining 2 KTables.        
+
+b. Create topics and create console producer like the last example, and use the below sample data to check your results.     
+```xml
+100001:{"UserName": "Prashant", "LoginID": "100001", "LastLogin": 1550150109302}
+100009:{"UserName": "Alisha", "LoginID": "100009", "LastLogin": 1550150280409}
+100087:{"UserName": "Abdul", "LoginID": "100087", "LastLogin": 1550150290305}
+
+100001:{"LoginID": "100001", "CreatedTime": 1550150291000}
+100087:{"LoginID": "100087", "CreatedTime": 1550150580000}
+```
+
+
 
 
 
