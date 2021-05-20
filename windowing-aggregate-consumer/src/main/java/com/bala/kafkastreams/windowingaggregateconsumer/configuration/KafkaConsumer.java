@@ -6,6 +6,7 @@ import java.time.ZoneOffset;
 import java.util.function.Consumer;
 
 import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.SessionWindows;
 import org.apache.kafka.streams.kstream.TimeWindows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +26,11 @@ public class KafkaConsumer {
 			.peek((k, v) -> log.info("Key = " + k + " Created Time = " 
 	                + Instant.ofEpochMilli(v.getCreatedTime()).atOffset(ZoneOffset.UTC))) // Printing the value which is the created time got because of the timestamp-extractor-bean-name 
 	                .groupByKey() // Record is grouped by store id which is the key 
-	                .windowedBy(TimeWindows.of(Duration.ofMinutes(5))) // subgroup by a 5 minute time window 
+	                .windowedBy( // subgroup by a 5 minute time window 
+	                		TimeWindows.of(Duration.ofMinutes(5)) // It is a Tumbling window - no overlap if we do not specify the advanceBy 
+	                		//.advanceBy(null)  // If we set this it will become a Hopping window with an overlap that can be set here 
+	                		) 
+	                //.windowedBy(SessionWindows.with(Duration.ofMinutes(5))) This is for implementing the session window but logic must be based on used clicks and not based on invoice generation
 	                .count() // count the records which results in a KTable
 	                .toStream() // convert the records into a KStream
 	                .foreach((k, v) -> log.info(    // Print the result 

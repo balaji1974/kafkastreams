@@ -556,6 +556,9 @@ STR1536:{"InvoiceNumber": 106,"CreatedTime": "1549361370000","StoreID": "STR1536
 
 e. Start the application and check the output after running the 1st 3 sample data and then run the next set of 3 sample data to check the output.    
 
+f. Note: We have 3 types of windowing -> Tumbiling window (Fixed interval - no overlap), Hopping window (Fixed interval - overlap) and Session Windows (Not fixed interval - check the commented secion of the config class)    
+
+
 
 
 
