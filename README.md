@@ -670,7 +670,7 @@ a. This project uses the same example as above with 2 more additional steps of s
 b. We can use the same input data as the above example for this project.  
 
 
-General note for functional programming:        
+## General note for functional programming:        
 ```xml
 -----------------------------------------------------------------------------
 | Number of Inputs  | Number of Outputs     | Component to use              |
