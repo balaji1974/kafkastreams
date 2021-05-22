@@ -667,7 +667,13 @@ b. Create topics and create console producer like the last example, and use the 
 
 a. This project uses the same example as above with 2 more additional steps of storting based ona a value and finding the 3 three results from the sorted list.     
 
-b. We can use the same input data as the above example for this project.  
+b. We can use the same input data as the above example for this project.    
+
+
+### 18) Kafka Streams Testing (Project: simple-test-consumer)   
+
+a. This project is used for unit testing Kafka Streams API. Please check the test class for full information on automated testing.    
+
 
 
 ## General note for functional programming:        
