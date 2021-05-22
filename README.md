@@ -663,6 +663,14 @@ b. Create topics and create console producer like the last example, and use the 
 1010:{"InventoryID": "1010"}
 ```
 
+### 17) Top 3 Json consumer (Project: topthree-json-consumer)  - Input format: json    
+
+a. This project uses the same example as above with 2 more additional steps of storting based ona a value and finding the 3 three results from the sorted list.     
+
+b. We can use the same input data as the above example for this project.     
+
+
+
 References:    
 https://cloud.spring.io/spring-cloud-static/spring-cloud-stream-binder-kafka/3.0.0.RC1/reference/html/spring-cloud-stream-binder-kafka.html    
 https://www.udemy.com/course/kafka-streams-with-spring-cloud-streams    
