@@ -675,7 +675,7 @@ General note for functional programming:
 -----------------------------------------------------------------------------
 | Number of Inputs  | Number of Outputs     | Component to use              |
 |-------------------|-----------------------|-------------------------------|
-| 1                 | 0						| java.util.function.Consumer   |
+| 1                 | 0                     | java.util.function.Consumer   |
 | 2 	            | 0 					| java.util.function.BiConsumer |
 | 1 				| 1..n 					| java.util.function.Function 	| 
 | 2					| 1..n 					| java.util.function.BiFunction |
