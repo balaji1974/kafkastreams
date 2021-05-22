@@ -667,8 +667,21 @@ b. Create topics and create console producer like the last example, and use the 
 
 a. This project uses the same example as above with 2 more additional steps of storting based ona a value and finding the 3 three results from the sorted list.     
 
-b. We can use the same input data as the above example for this project.     
+b. We can use the same input data as the above example for this project.  
 
+
+General note for functional programming:        
+```xml
+-----------------------------------------------------------------------------
+| Number of Inputs 	| Number of Outputs 	| Component to use 				|
+|-------------------|-----------------------|-------------------------------|
+| 1 				| 0						| java.util.function.Consumer 	|
+| 2 	            | 0 					| java.util.function.BiConsumer |
+| 1 				| 1..n 					| java.util.function.Function 	| 
+| 2					| 1..n 					| java.util.function.BiFunction |
+| >= 3				| 0..n  				| Use curried functions			|
+-----------------------------------------------------------------------------
+```
 
 
 References:    
