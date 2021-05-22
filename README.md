@@ -8,12 +8,15 @@ bin/kafka-server-start.sh config/server.properties
 
 ### For more details on the above commands please refer to my kafka reposiory.   
 
-    
 # KStream(key,value pair)    
 ##Same key gets inserted multiple times     
 
 # KTable(key,value pair)     
-## Same key get updated and when we send a null value the key gets removed. Null key is not permitted here. Also data gets stored in an intermediate RocksDB database until the commit interval and hence same key sent during this period will send only the last key-value pair to the output stream.    
+## Same key get updated and when we send a null value the key gets removed. Null key is not permitted here. Also data gets stored in an intermediate RocksDB database until the commit interval and hence same key sent during this period will send only the last key-value pair to the output stream.   
+
+#GlobalKTable
+##It is available globally for all tasks unlike KTable which is local to each task.    
+
 
 ## Important KStream methods: ->     
 filter, filterNot    
@@ -630,10 +633,39 @@ b. Create topics and create console producer like the last example, and use the 
 ```
 
 
+### 16) Join KStream to GlobalKTable to produce results (Project: kstream-gktable-joins)  - Input format: json    
 
+a. This project uses the join concept on KTables with a GKTable. It is exactly the same as the last project. What it does is join an AdInventory class with the AdClicks class to count the number of clicks for each inventoryID. It is a very simple example and straight forward to check the concept of joins and the configuration class is well commented to explain the concept step by step.           
 
+b. Create topics and create console producer like the last example, and use the below sample data to check your results.     
+```xml
+1001:{"InventoryID": "1001", "NewsType": "Sports"}
+1002:{"InventoryID": "1002", "NewsType": "Politics"}
+1003:{"InventoryID": "1003", "NewsType": "LocalNews"}
+1004:{"InventoryID": "1004", "NewsType": "WorldNews"}
+1005:{"InventoryID": "1005", "NewsType": "Health"}
+1006:{"InventoryID": "1006", "NewsType": "Lifestyle"}
+1007:{"InventoryID": "1007", "NewsType": "Literature"}
+1008:{"InventoryID": "1008", "NewsType": "Education"}
+1009:{"InventoryID": "1009", "NewsType": "Social"}
+1010:{"InventoryID": "1010", "NewsType": "Business"}
+
+1001:{"InventoryID": "1001"}
+1002:{"InventoryID": "1002"}
+1003:{"InventoryID": "1003"}
+1004:{"InventoryID": "1004"}
+1004:{"InventoryID": "1004"}
+1005:{"InventoryID": "1005"}
+1006:{"InventoryID": "1006"}
+1007:{"InventoryID": "1007"}
+1008:{"InventoryID": "1008"}
+1009:{"InventoryID": "1009"}
+1010:{"InventoryID": "1010"}
+```
 
 References:    
+https://cloud.spring.io/spring-cloud-static/spring-cloud-stream-binder-kafka/3.0.0.RC1/reference/html/spring-cloud-stream-binder-kafka.html    
 https://www.udemy.com/course/kafka-streams-with-spring-cloud-streams    
+
 
 
